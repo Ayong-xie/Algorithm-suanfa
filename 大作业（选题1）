@@ -1,0 +1,42 @@
+#include<stdio.h> 
+#include<math.h>
+int max(int a,int b)
+{
+	return	a>b?a:b;
+}
+//0/1背包问题 
+int packet(int n,int time[])	//n项任务，任务时间数组 
+{
+	int totalTime=0;
+	for (int i=0;i<n;i++)
+		totalTime += time[i];
+	int halfTime = totalTime/2;	//分配给2个机器  
+	int F[5][halfTime+1];
+	for (int i=0;i<=halfTime;i++)
+		F[0][i]=(i>=time[0]?time[0]:0);
+	for (int k=1;k<n;k++)
+	{
+		for (int y=0;y<=halfTime;y++)
+		{
+			if (y<time[k])
+				F[k][y]=F[k-1][y];
+			else 
+				F[k][y]=max(F[k-1][y],F[k-1][y-time[k]]+time[k]);
+		}
+	}
+	return totalTime-F[n-1][halfTime];
+}
+
+int main () {
+	int T;	//两台机器完成任务总时间T 
+	int t[5]={1,5,2,10,3};	//5项任务的时间数组 
+	printf("有5项任务，加工时间分别为：\n");
+	for(int i=0;i<4;i++){
+		printf("t%d = %d \n",(i+1),t[i]);
+	}
+	printf("t5 = %d \n",t[4]);
+	printf("**********************\n");
+	T=packet(5,t);
+	printf("总加工时间T最少为：%d\n",T);
+	return 0;
+}
