@@ -1,0 +1,108 @@
+#include<stdio.h>
+#include<math.h>
+#define v_Num 6	//顶点数 
+void Matrix(int G[v_Num][v_Num]);	//利用二维数组记录有向图的邻接矩阵
+
+void Prim(int G[v_Num][v_Num],int i,int visit[v_Num],int dist[v_Num],int edge[v_Num])
+{
+	//初始化
+	visit[i] = 1;
+	//访问与顶点i相邻且未被访问的顶点
+	//如果权值小于之前的边则替换，并记录边 
+	for (int j=0;j<v_Num;j++)
+	{
+		if (visit[j]==0 && G[i][j]!=9999)
+		{
+			if (G[i][j]<dist[j])
+			{
+				dist[j]=G[i][j];
+				edge[j]=i;
+			}
+		}
+	}
+	//在未被访问过的顶点中寻找路径最短的顶点
+	int minDist=-1;
+	for (int a=0;a<v_Num;a++){
+		if (visit[a]==0){
+			minDist=a;
+			break;
+		}
+	}
+	for (int k=minDist+1;k<v_Num;k++){
+		if (visit[k]==0 && dist[k]<dist[minDist]){
+			minDist=k;
+		}
+	}
+	if (minDist!=-1){
+		Prim(G,minDist,visit,dist,edge);//递归查找 
+	}
+}
+
+int main()
+{
+	//初始化邻接矩阵 
+	int G[v_Num][v_Num];
+	for (int i=0;i<v_Num;i++)
+	{
+		for (int j=0;j<v_Num;j++)
+		{
+			G[i][j]=9999;
+		}
+	}
+	Matrix(G);	//给邻接矩阵赋值 
+	int visit[v_Num]={0};	//初始化visit数组	
+	int weight[v_Num];
+	//初始化dist数组 
+	for (int i=0;i<v_Num;i++)
+	{
+		weight[i]=9999;
+	}
+	int edge[v_Num]={0};	//初始化path数组
+	//利用Prim算法求解最小生成树
+	weight[0]=0;
+	Prim(G,0,visit,weight,edge);
+	//输出最小生成树的边及权值和总权值
+	int totalWeight = 0;
+	printf("最小生成树的边：\n");
+	for (int i=1;i<v_Num;i++)
+	{
+		printf("<v%d - v%d> 权值：%d\n",(i+1),(edge[i]+1),weight[i]);
+		totalWeight+=weight[i];
+	}
+	printf("------------------------\n");
+	printf("最小生成树的总权值：%d\n",totalWeight);
+
+	return 0;
+}
+
+//利用二维数组创建有向图的邻接矩阵，带权值
+void Matrix(int mat[v_Num][v_Num])
+{	
+ //A0 B1 C2 D3 E4 F5
+	mat[0][1] = 6;
+	mat[0][2] = 1;
+	mat[0][3] = 5;
+ //A0 B1 C2 D3 E4 F5
+	mat[1][0] = 6;
+	mat[1][2] = 5;
+	mat[1][4] = 3;
+ //A0 B1 C2 D3 E4 F5
+	mat[2][0] = 1;
+	mat[2][1] = 5;
+	mat[2][3] = 5;
+	mat[2][4] = 6;
+	mat[2][5] = 4;
+ //A0 B1 C2 D3 E4 F5
+	mat[3][0] = 5;
+	mat[3][2] = 5;
+	mat[3][5] = 2;
+ //A0 B1 C2 D3 E4 F5
+	mat[4][1] = 5;
+	mat[4][2] = 6;
+	mat[4][5] = 6;
+ //A0 B1 C2 D3 E4 F5
+	mat[5][2] = 4;
+	mat[5][3] = 2;
+	mat[5][4] = 6;
+}
+ 
