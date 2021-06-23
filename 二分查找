@@ -1,0 +1,36 @@
+#include<stdio.h>
+#include<stdlib.h>
+int BinarySearch(int T[], int n, int x)
+{
+	int low = 0;
+	int high = n-1;
+	int middle;
+	while (low <= high)
+	{
+		middle = (low + high) / 2; 
+		if (x < T[middle])high = middle - 1;     
+		else if (x > T[middle])low = middle + 1;     
+		else return middle; 
+	}
+	return 0;
+}
+int main() 
+{
+	int index;
+	int T[11];
+	for(int i=1;i<11;i++){
+		T[i]=i;
+	}
+	printf("当前数组T为：\n"); 
+	for(int i=1;i<10;i++){
+		printf("%d ,",T[i]);
+	}
+	printf("%d\n",T[10]);
+	int x;
+	printf("请输入要查找的数 x :\n");
+	scanf("%d",&x);
+	printf("--------------\n");
+	printf("如果x在数组T中则输出x的下标，不在则输出0：\n");
+	index=BinarySearch(T,10,x);
+	printf("%d\n",index);
+}
