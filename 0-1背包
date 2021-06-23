@@ -1,0 +1,59 @@
+#include<iostream>
+using namespace std;
+#include <algorithm>
+int v[5] = { 0 , 3 , 4 , 5 , 6 }; 	//物品的价值3、4、5、6
+int w[5] = { 0 , 2 , 3 , 4 , 5 };	//物品的重量2、3、4、5
+		
+int bag = 8;	//背包限重 
+int dp[5][9] = { { 0 } };	//动态规划表
+int plan[5];	//最优解情况
+
+void maxValue() {
+	for (int i = 1; i <= 4; i++) {
+		for (int j = 1; j <= bag; j++) {
+			if (j < w[i])
+				dp[i][j] = dp[i - 1][j];
+			else
+				dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - w[i]] + v[i]);
+		}
+	}
+}
+void best(int i, int j) {//最优解情况
+	if (i >= 0) {
+		if (dp[i][j] == dp[i - 1][j]) {
+			plan[i] = 0;
+			best(i - 1, j);
+		}
+		else if (j - w[i] >= 0 && dp[i][j] == dp[i - 1][j - w[i]] + v[i]) {
+			plan[i] = 1;
+			best(i - 1, j - w[i]);
+		}
+	}
+}
+ 
+int main()
+{
+	maxValue();
+	best(4, 8);
+	cout<<"背包限重为8，有4件物品"<<endl;
+	cout<<"物品的价值依次为："<<endl;
+	for (int i = 1; i < 5; i++) {
+		cout << v[i] << ' ';
+	}
+	cout<<endl; 
+	cout<<"物品的重量依次为："<<endl;
+	for (int j = 1; j < 5; j++) {
+			cout << w[j] << ' ';
+		}
+	cout<<endl; 
+	cout<<"装入的物品的最大的价值总和为：";
+	cout<<dp[4][8]<<endl;
+	cout<<"---------------------"<<endl;
+	cout<<"最优组合的装载情况：";
+	for (int i = 1; i < 5; i++)			//最优解输出
+		cout << plan[i] << ' ';
+	cout << endl;
+	return 0;
+}
+
+ 
