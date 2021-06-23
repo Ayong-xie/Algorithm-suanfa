@@ -1,0 +1,98 @@
+#include <stdio.h>
+#define num_E 10
+#define num_V 6
+typedef struct{
+	int vex1;                     
+	int vex2;                      
+	int weight;                    
+}Edge;
+void kruskal(Edge E[],int n,int e)
+{ 
+	int i,j,m1,m2,s1,s2,k,sum=0;
+	int vset[n+1];
+	for(i=1;i<=n;i++)        
+		vset[i]=i;
+	k=1;	//表示当前构造最小生成树的第k条边，初值为1
+  	j=0;	//E中边的下标，初值为0
+	printf("最小生成树的边：\n");
+	while(k<e)	
+	{
+    	m1=E[j].vex1;
+    	m2=E[j].vex2;	
+    	s1=vset[m1];
+    	s2=vset[m2];                           
+	    
+	    if(s1!=s2)	//两顶点分属于不同的集合，该边是最小生成树的一条边,防止出现闭合回路 
+	    {
+			printf("<v%d - v%d> 权值：%d\n",m1,m2,E[j].weight);
+			sum+=E[j].weight;
+			k++;                //记录生成边数
+			if(k>=n)
+				break;
+			for(i=1;i<=n;i++)    
+				if (vset[i]==s2)  
+					vset[i]=s1;
+	    }
+     		j++;                  //下一条边
+	}
+    printf("------------------------\n");
+	printf("小生成树的总权值：%d\n",sum);
+}
+int func(Edge arr[],int begin,int end)
+{
+ 	int key;
+ 	Edge start;
+ 	start=arr[begin];
+ 	key=arr[begin].weight;
+ 	while(begin<end)
+ 	{
+ 		while(begin<end && arr[end].weight>=key)
+ 			end--;
+ 		if(begin<end)
+ 			arr[begin++]=arr[end];
+
+ 		while(begin<end && arr[begin].weight<=key)
+ 			begin++;
+ 		if(begin<end)
+ 			arr[end--]=arr[begin];
+	 }
+	 arr[begin]=start;
+	 return begin;
+}
+void quick_sort(Edge arr[],int begin,int end)
+{
+	int temp;
+	if(begin<end)
+	{
+		temp=func(arr,begin,end);
+		quick_sort(arr,begin,temp-1);
+		quick_sort(arr,temp+1,end);
+	}
+}
+
+void createEdge(Edge G[num_E])
+{	//E[i].vex1,E[i].vex2,E[i].weight
+ 	//A0 B1 C2 D3 E4 F5
+	G[0].vex1=0;G[0].vex2=1;G[0].weight=6;
+	G[1].vex1=0;G[1].vex2=2;G[1].weight=1;
+	G[2].vex1=0;G[2].vex2=3;G[2].weight=5;
+	G[3].vex1=1;G[3].vex2=2;G[3].weight=5;
+	G[4].vex1=1;G[4].vex2=4;G[4].weight=3;
+	G[5].vex1=2;G[5].vex2=3;G[5].weight=5;
+	G[6].vex1=2;G[6].vex2=4;G[6].weight=6;
+	G[7].vex1=2;G[7].vex2=5;G[7].weight=4;
+	G[8].vex1=3;G[8].vex2=5;G[8].weight=2;
+	G[9].vex1=4;G[9].vex2=5;G[9].weight=6;
+}
+int main()
+{
+	Edge E[num_E];
+	createEdge(E);
+	quick_sort(E,0,num_E-1);
+	printf("按权重从小到达排序后：\n");
+	for(int i=0;i<num_E;i++)
+		printf("v%d - v%d ,权重：%d\n",E[i].vex1,E[i].vex2,E[i].weight);
+	printf("------------------------\n");
+	kruskal(E,num_V,num_E);	
+	return 0;
+}
