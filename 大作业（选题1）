@@ -39,3 +39,4 @@ int main () {
 	printf("总加工时间T最少为：%d\n",T);
 	return 0;
 }
+
