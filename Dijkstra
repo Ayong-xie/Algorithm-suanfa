@@ -1,0 +1,116 @@
+#include<stdio.h>
+#include<math.h> 
+#define MAX_Vnum 20	
+#define INF 9999
+typedef struct {
+    int vexs[MAX_Vnum];        			
+    int arcs[MAX_Vnum][MAX_Vnum];		
+    int vnum, arcnum;                   
+}MGraph;
+
+typedef int Path[MAX_Vnum];     
+typedef int ShortPath[MAX_Vnum]; 
+
+//构造有向网
+void createGraph(MGraph* G) {
+    G->vnum=8;G->arcnum=11;
+	printf("该有向图的顶点数，边数为：%d , %d\n",G->vnum,G->arcnum);
+    for (int i = 0; i < G->vnum; i++) {
+        G->vexs[i]=i;
+    }
+    //初始化 
+    for (int i = 0; i < G->vnum; i++) {
+        for (int j = 0; j < G->vnum; j++) {
+            G->arcs[i][j] = INF;
+        }
+    }
+    printf("请输入相邻的两个顶点以及边的权重：\n");
+    for (int i = 0; i < G->arcnum; i++) {
+        int v1, v2, w;
+        scanf("%d %d %d", &v1, &v2, &w);
+        int a;
+        for (int i=0; i < G->vnum; i++) {
+        	if (G->vexs[i] == v1) {
+        	    a=i;
+        	}
+    	}
+        int b;
+        for (int i=0; i < G->vnum; i++) {
+        	if (G->vexs[i] == v2) {
+        	    b=i;
+        	}
+    	}
+        G->arcs[a][b] = w;
+    }
+}
+void Dijkstra(MGraph G, int v0, Path* p, ShortPath* D){
+    int final[MAX_Vnum];
+    //对各数组进行初始化
+    for (int v = 0; v < G.vnum; v++) {
+        final[v] = 0;
+        (*D)[v] = G.arcs[v0][v];
+        (*p)[v] = 0;
+    }
+    (*D)[v0] = 0;
+    final[v0] = 1;
+    int k = 0;
+    for (int i = 0; i < G.vnum; i++) {
+        int min = INF;
+        for (int w = 0; w < G.vnum; w++) {
+            if (!final[w]) {
+                if ((*D)[w] < min) {
+                    k = w;
+                    min = (*D)[w];
+                }
+            }
+        }
+        final[k] = 1;
+        for (int w = 0; w < G.vnum; w++) {
+            if (!final[w] && (min + G.arcs[k][w] < (*D)[w])) {
+                (*D)[w] = min + G.arcs[k][w];
+                (*p)[w] = k;	
+            }
+        }
+    }
+}
+int main() {
+    MGraph G;
+    createGraph(&G);
+    Path P;
+    ShortPath D;
+    Dijkstra(G, 0, &P, &D);
+    
+    printf("V0 - V7的最短路径(逆序)为：");
+    printf(" V7");
+    int j = 7;
+    while (P[j] != 0) {
+        printf(" V%d", P[j]);
+        j = P[j];
+    }
+    printf(" V0\n");
+	printf("-----------------------------\n");
+    printf("V0(a)到V7(h)的最短路径长度为: ");
+    //for (int i = 1; i < G.vnum; i++) {
+        printf("%d \n", D[7]);
+    //}
+    return 0;
+}
+
+/*
+顶点数，边数：
+8 11
+各个顶点：
+0 1 2 3 4 5 6 7 
+请输入相邻的两个顶点以及边的权重：
+0 1 1
+1 3 2 
+3 2 1
+2 0 2
+3 5 8
+5 4 2
+4 3 2
+4 6 2
+6 5 3
+6 7 3
+7 5 2
+*/
